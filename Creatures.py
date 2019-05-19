@@ -131,6 +131,16 @@ class Creature:
                     self.next_instruction = int(op[1])
                     continue
 
+            elif op[0] == 'twist':
+                if self.direction == 'North':
+                    self.direction = 'East'
+                elif self.direction == 'East':
+                    self.direction = 'South'
+                elif self.direction == 'South':
+                    self.direction = 'West'
+                elif self.direction == 'West':
+                    self.direction = 'north'
+
             self.next_instruction += 1
             finished = True
 
