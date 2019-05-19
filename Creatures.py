@@ -2,17 +2,18 @@
 ### Project Two - Creatures
 import turtle
 import hashlib
-
+from collections import Counter
 
 ## This class represents a creature
 class Creature:
 
     ## A creature stores its position and direction and its "DNA" - the list of instructions it follows
-    def __init__(self, row, col, dna, direction):
+    def __init__(self, row, col, dna, direction, name):
         self.direction = direction
         self.row = row
         self.col = col
         self.dna = dna
+        self.name = name
         self.next_instruction = 1
 
     ## Returns a string representation of the creature
@@ -84,7 +85,7 @@ class Creature:
 
     ## Gets the current position of the creature
     def get_position(self):
-        return (self.row, self.col)
+        return self.row, self.col
 
     ## Execute a single move (either hop, left or right) for this creature by following the instructions in its dna
     def make_move(self, world):
@@ -144,6 +145,7 @@ class Creature:
             self.next_instruction += 1
             finished = True
 
+
 ## This class represents the grid-based world
 class World:
 
@@ -152,7 +154,7 @@ class World:
         self.size = size
         self.generation = 0
         self.max_generations = max_generations
-        self.creatures = []  #5
+        self.creatures = []
 
     ## Adds a creature to the world
     def add_creature(self, c):
@@ -183,9 +185,19 @@ class World:
             print(self)
             return True
 
-    ## Returns a string representation of the world
     def __str__(self):
-        return 'A world full of creatures'
+        """Returns a string representation of the world."""
+
+        # Count the frequency of each creature
+        counts = Counter([c.name for c in self.creatures]).most_common()
+
+        # Sort in descending order by frequency, and then alphabetically
+        counts.sort(key=lambda x: (-x[1], x[0]))
+
+        # Convert each creature to it's string representation
+        creatures = [c.__str__() for c in self.creatures]
+
+        return f'{self.size}\n' + f'{counts}\n' + '\n'.join(creatures)
 
     ## Display the world by drawing the creature, and placing a grid around it
     def draw(self):
@@ -269,13 +281,14 @@ class CreatureWorld:
 
         for creature in world_data[2:]:
             data = creature.split()
-            dna = dna_dict[data[0]]
+            name = data[0]
+            dna = dna_dict[name]
             row = int(data[1])
             col = int(data[2])
             direction = data[3]
 
             if self.world.get_cell(row, col) == 'EMPTY':
-                self.world.add_creature(Creature(row, col, dna, direction))
+                self.world.add_creature(Creature(row, col, dna, direction, name))
 
         # Draw the initial layout of the world
         self.world.draw()

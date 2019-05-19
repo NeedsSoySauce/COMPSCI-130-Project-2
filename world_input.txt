@@ -1,3 +1,7 @@
 7
-1000
+1
 Rook 4 4 North
+Rook 4 5 North
+Rook 4 6 North
+Hopper 5 4 South
+Parry 5 5 East
