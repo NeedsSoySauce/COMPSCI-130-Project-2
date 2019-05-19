@@ -1,7 +1,7 @@
-15
-5
-Hopper 8 8 North
-Hopper 8 8 South
-Hopper 9 9 East
-Hopper 8 8 West
-Hopper 9 9 North
+7
+1000
+Parry 1 1 North
+Parry 1 7 North
+Parry 4 4 North
+Parry 7 1 North
+Parry 7 7 North

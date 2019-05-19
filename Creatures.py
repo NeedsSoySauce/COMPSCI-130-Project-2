@@ -117,6 +117,18 @@ class Creature:
                 self.next_instruction = self.next_instruction + 1
                 finished = True
 
+            if op[0] == 'reverse':
+                if self.direction == 'North':
+                    self.direction = 'South'
+                elif self.direction == 'South':
+                    self.direction = 'North'
+                elif self.direction == 'East':
+                    self.direction = 'West'
+                elif self.direction == 'West':
+                    self.direction = 'East'
+                self.next_instruction = self.next_instruction + 1
+                finished = True
+
 
 ## This class represents the grid-based world
 class World:
@@ -224,7 +236,7 @@ class CreatureWorld:
     def setup_simulation(self):
 
         ## If new creatures are defined, they should be added to this list: #6
-        all_creatures = ['Hopper']
+        all_creatures = ['Hopper', 'Parry']
 
         # Read the creature location data
         with open('world_input.txt') as f:
