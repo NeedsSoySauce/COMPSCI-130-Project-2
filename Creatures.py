@@ -126,24 +126,31 @@ class World:
         self.size = size
         self.generation = 0
         self.max_generations = max_generations
-        self.creature = None  #5
+        self.creatures = []  #5
 
     ## Adds a creature to the world
     def add_creature(self, c):
-        self.creature = c
+        self.creatures.append(c)
 
     ## Gets the contents of the specified cell.  This could be 'WALL' if the cell is off the grid
     ## or 'EMPTY' if the cell is unoccupied
     def get_cell(self, row, col):
         if row <= 0 or col <= 0 or row >= self.size + 1 or col >= self.size + 1:
             return 'WALL'
+
+        # Check if there are any creatures in this world at the given position
+        for creature in self.creatures:
+            if creature.row == row and creature.col == col:
+                return 'CREATURE'
+
         return 'EMPTY'
 
     ## Executes one generation for the world - the creature moves once.  If there are no more
     ## generations to simulate, the world is printed
     def simulate(self):
         if self.generation < self.max_generations:
-            self.creature.make_move(self)
+            for creature in self.creatures:
+                creature.make_move(self)
             self.generation += 1
             return False
         else:
@@ -164,7 +171,8 @@ class World:
         grid_size = grid_width / self.size
 
         # Draw the creature
-        self.creature.draw(grid_size, top_left_x, top_left_y)
+        for creature in self.creatures:
+            creature.draw(grid_size, top_left_x, top_left_y)
 
         # Draw the bounding box
         turtle.goto(top_left_x, top_left_y)
@@ -232,10 +240,16 @@ class CreatureWorld:
         world_size = world_data[0]
         world_generations = world_data[1]
         self.world = World(int(world_size), int(world_generations))
-        creature = world_data[2]
-        data = creature.split()
-        self.world.add_creature(
-            Creature(int(data[1]), int(data[2]), dna_dict[data[0]], data[3]))
+
+        for creature in world_data[2:]:
+            data = creature.split()
+            dna = dna_dict[data[0]]
+            row = int(data[1])
+            col = int(data[2])
+            direction = data[3]
+
+            if self.world.get_cell(row, col) == 'EMPTY':
+                self.world.add_creature(Creature(row, col, dna, direction))
 
         # Draw the initial layout of the world
         self.world.draw()
