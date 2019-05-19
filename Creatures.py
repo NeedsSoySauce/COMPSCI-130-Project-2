@@ -22,18 +22,55 @@ class Creature:
         ## Compute the position of the top left hand corner of the cell this creature is in
         x = top_left_x + (self.col - 1) * grid_size
         y = top_left_y - (self.row - 1) * grid_size
-        turtle.color(self.dna[0].split(":")[1])
 
         ## Draw the creature
+
+        # Overwrite everything in the cell
         turtle.goto(x, y)
         turtle.pendown()
         turtle.begin_fill()
+        turtle.color("white")
         turtle.goto(x + grid_size, y)
         turtle.goto(x + grid_size, y - grid_size)
         turtle.goto(x, y - grid_size)
-        turtle.goto(x, y)
+        turtle.goto(x, y)  # This one is redundant
         turtle.end_fill()
         turtle.penup()
+
+        turtle.color(self.dna[0].split(":")[1])
+
+        # Draw a triangle in the direction this creature is facing
+        if self.direction == 'North':
+            turtle.goto(x + (grid_size / 2), y)
+            turtle.pendown()
+            turtle.begin_fill()
+            turtle.goto(x, y - grid_size)
+            turtle.goto(x + grid_size, y - grid_size)
+
+        elif self.direction == 'East':
+            turtle.goto(x + grid_size, y - (grid_size / 2))
+            turtle.pendown()
+            turtle.begin_fill()
+            turtle.goto(x, y)
+            turtle.goto(x, y - grid_size)
+
+        elif self.direction == 'South':
+            turtle.goto(x + (grid_size / 2), y - grid_size)
+            turtle.pendown()
+            turtle.begin_fill()
+            turtle.goto(x, y)
+            turtle.goto(x + grid_size, y)
+
+        else:  # West
+            turtle.goto(x, y - (grid_size / 2))
+            turtle.pendown()
+            turtle.begin_fill()
+            turtle.goto(x + grid_size, y)
+            turtle.goto(x + grid_size, y - grid_size)
+
+        turtle.end_fill()
+        turtle.penup()
+
         turtle.color("black")
 
     ## Returns the name of the species for this creature
