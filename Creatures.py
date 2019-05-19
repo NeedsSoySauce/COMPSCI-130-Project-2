@@ -15,6 +15,11 @@ class Creature:
         self.dna = dna
         self.next_instruction = 1
 
+    ## Returns a string representation of the creature
+    def __str__(self):
+        return str(self.get_species() + ' ' + str(self.row) + ' ' +
+                   str(self.col) + ' ' + str(self.direction))
+
     ## A creature draws itself using the colour specified as part of its dna
     ## the size of the grid squares, and the position of the top-left pixel are provided as input
     def draw(self, grid_size, top_left_x, top_left_y):
@@ -81,11 +86,6 @@ class Creature:
     def get_position(self):
         return (self.row, self.col)
 
-    ## Returns a string representation of the creature
-    def __str__(self):
-        return str(self.get_species() + ' ' + str(self.row) + ' ' +
-                   str(self.col) + ' ' + str(self.direction))
-
     ## Execute a single move (either hop, left or right) for this creature by following the instructions in its dna
     def make_move(self, world):
         finished = False
@@ -106,18 +106,17 @@ class Creature:
         while not finished:
             next_op = self.dna[self.next_instruction]
             op = next_op.split()
-            ################## GO #########################2
+
             if op[0] == 'go':
                 self.next_instruction = int(op[1])
-            ################## HOP #########################3
-            if op[0] == 'hop':
+                continue
+
+            elif op[0] == 'hop':
                 if ahead_value == 'EMPTY':
                     self.row = ahead_row
                     self.col = ahead_col
-                self.next_instruction = self.next_instruction + 1
-                finished = True
 
-            if op[0] == 'reverse':
+            elif op[0] == 'reverse':
                 if self.direction == 'North':
                     self.direction = 'South'
                 elif self.direction == 'South':
@@ -126,9 +125,14 @@ class Creature:
                     self.direction = 'West'
                 elif self.direction == 'West':
                     self.direction = 'East'
-                self.next_instruction = self.next_instruction + 1
-                finished = True
 
+            elif op[0] == 'ifnotwall':
+                if ahead_value == 'EMPTY':
+                    self.next_instruction = int(op[1])
+                    continue
+
+            self.next_instruction += 1
+            finished = True
 
 ## This class represents the grid-based world
 class World:
@@ -236,7 +240,7 @@ class CreatureWorld:
     def setup_simulation(self):
 
         ## If new creatures are defined, they should be added to this list: #6
-        all_creatures = ['Hopper', 'Parry']
+        all_creatures = ['Hopper', 'Parry', 'Rook']
 
         # Read the creature location data
         with open('world_input.txt') as f:
