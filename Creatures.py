@@ -15,6 +15,7 @@ class Creature:
         self.dna = dna
         self.name = name
         self.next_instruction = 1
+        self.ahead = None
 
     ## Returns a string representation of the creature
     def __str__(self):
@@ -83,14 +84,11 @@ class Creature:
     def get_species(self):
         return self.dna[0].split(":")[0]
 
-    ## Gets the current position of the creature
+    ## Gets the current position of the creature 
     def get_position(self):
         return self.row, self.col
 
-    ## Execute a single move (either hop, left or right) for this creature by following the instructions in its dna
-    def make_move(self, world):
-        finished = False
-        # Find out what lies ahead
+    def get_ahead_pos(self):
         ahead_row = self.row
         ahead_col = self.col
         if self.direction == 'North':
@@ -101,50 +99,77 @@ class Creature:
             ahead_col = ahead_col + 1
         elif self.direction == 'West':
             ahead_col = ahead_col - 1
-        ahead_value = world.get_cell(ahead_row, ahead_col)
+        return ahead_row, ahead_col
 
-        # Continue to execute the creature's instructions until a "hop" instruction is reached
+    def op_go(self, op):
+        self.next_instruction = int(op[1])
+
+    def op_hop(self, ahead_row, ahead_col):
+        if self.ahead == 'EMPTY':
+            self.row = ahead_row
+            self.col = ahead_col
+
+    def op_reverse(self):
+        if self.direction == 'North':
+            self.direction = 'South'
+        elif self.direction == 'South':
+            self.direction = 'North'
+        elif self.direction == 'East':
+            self.direction = 'West'
+        elif self.direction == 'West':
+            self.direction = 'East'
+
+    def op_ifnotwall(self, op):
+        if self.ahead == 'EMPTY':
+            self.next_instruction = int(op[1])
+        else:
+            self.next_instruction += 1
+
+    def op_twist(self):
+        if self.direction == 'North':
+            self.direction = 'East'
+        elif self.direction == 'East':
+            self.direction = 'South'
+        elif self.direction == 'South':
+            self.direction = 'West'
+        elif self.direction == 'West':
+            self.direction = 'North'
+
+    ## Execute a single move (either hop, left or right) for this creature by following the instructions in its dna
+    def make_move(self, world):
+        finished = False
+        ahead_row, ahead_col = self.get_ahead_pos()
+        self.ahead = world.get_cell(ahead_row, ahead_col)
+
+        dispatch = {
+            'go': self.op_go,
+            'hop': self.op_hop,
+            'reverse': self.op_reverse,
+            'ifnotwall': self.op_ifnotwall,
+            'twist': self.op_twist,
+        }
+
+        # Operations that do not end a creature's turn
+        control_ops = set(['go', 'ifnotwall'])
+
+        # Execute the creature's instructions until a non-control-flow op is run
         while not finished:
             next_op = self.dna[self.next_instruction]
             op = next_op.split()
 
-            if op[0] == 'go':
-                self.next_instruction = int(op[1])
+            op_args = {
+                'go': {'op': op},
+                'hop': {'ahead_row': ahead_row, 'ahead_col': ahead_col},
+                'ifnotwall': {'op': op}
+            }
+
+            dispatch[op[0]](**op_args.get(op[0], {}))
+
+            if op[0] in control_ops:
                 continue
-
-            elif op[0] == 'hop':
-                if ahead_value == 'EMPTY':
-                    self.row = ahead_row
-                    self.col = ahead_col
-
-            elif op[0] == 'reverse':
-                if self.direction == 'North':
-                    self.direction = 'South'
-                elif self.direction == 'South':
-                    self.direction = 'North'
-                elif self.direction == 'East':
-                    self.direction = 'West'
-                elif self.direction == 'West':
-                    self.direction = 'East'
-
-            elif op[0] == 'ifnotwall':
-                if ahead_value == 'EMPTY':
-                    self.next_instruction = int(op[1])
-                    continue
-
-            elif op[0] == 'twist':
-                if self.direction == 'North':
-                    self.direction = 'East'
-                elif self.direction == 'East':
-                    self.direction = 'South'
-                elif self.direction == 'South':
-                    self.direction = 'West'
-                elif self.direction == 'West':
-                    self.direction = 'North'
 
             self.next_instruction += 1
             finished = True
-
 
 ## This class represents the grid-based world
 class World:
