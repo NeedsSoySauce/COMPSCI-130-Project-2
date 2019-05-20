@@ -104,10 +104,10 @@ class Creature:
     def op_go(self, op):
         self.next_instruction = int(op[1])
 
-    def op_hop(self, ahead_row, ahead_col):
+    def op_hop(self, row, col):
         if self.ahead == 'EMPTY':
-            self.row = ahead_row
-            self.col = ahead_col
+            self.row = row
+            self.col = col
 
     def op_reverse(self):
         if self.direction == 'North':
@@ -135,23 +135,27 @@ class Creature:
         elif self.direction == 'West':
             self.direction = 'North'
 
-    def ifsame(self, op):
+    def op_ifsame(self, op):
         if isinstance(self, type(self.ahead)) and self.name == self.ahead.name:
             self.next_instruction = int(op[1])
         else:
             self.next_instruction += 1
 
-    def ifenemy(self, op):
+    def op_ifenemy(self, op):
         if isinstance(self, type(self.ahead)) and self.name != self.ahead.name:
             self.next_instruction = int(op[1])
         else:
             self.next_instruction += 1
 
-    def ifrandom(self, op, world):
+    def op_ifrandom(self, op, world):
         if world.pseudo_random():
             self.next_instruction = int(op[1])
         else:
             self.next_instruction += 1
+
+    def op_infect(self):
+        self.ahead.name = self.name
+        self.ahead.dna = self.dna
 
     ## Execute a single move (either hop, left or right) for this creature by following the instructions in its dna
     def make_move(self, world):
@@ -165,6 +169,10 @@ class Creature:
             'reverse': self.op_reverse,
             'ifnotwall': self.op_ifnotwall,
             'twist': self.op_twist,
+            'ifsame': self.op_ifsame,
+            'ifenemy': self.op_ifenemy,
+            'ifrandom': self.op_ifrandom,
+            'infect': self.op_infect
         }
 
         # Operations that do not end a creature's turn
@@ -177,14 +185,17 @@ class Creature:
 
             op_args = {
                 'go': {'op': op},
-                'hop': {'ahead_row': ahead_row, 'ahead_col': ahead_col},
+                'hop': {'row': ahead_row, 'col': ahead_col},
                 'ifnotwall': {'op': op},
                 'ifsame': {'op': op},
                 'ifenemy': {'op': op},
                 'ifrandom': {'op': op, 'world': world},
             }
 
-            dispatch[op[0]](**op_args.get(op[0], {}))
+            try:
+                dispatch[op[0]](**op_args.get(op[0], {}))
+            except KeyError:
+                raise ValueError(f"can't find instruction '{next_op}'.")
 
             if op[0] in control_ops:
                 continue
@@ -224,9 +235,9 @@ class World:
     ## generations to simulate, the world is printed
     def simulate(self):
         if self.generation < self.max_generations:
+            self.generation += 1
             for creature in self.creatures:
                 creature.make_move(self)
-            self.generation += 1
             return False
         else:
             print(self)
@@ -313,7 +324,7 @@ class CreatureWorld:
     def setup_simulation(self):
 
         ## If new creatures are defined, they should be added to this list: #6
-        all_creatures = ['Hopper', 'Parry', 'Rook', 'Roomber']
+        all_creatures = ['Hopper', 'Parry', 'Rook', 'Roomber', 'Randy', 'Flytrap']
 
         # Read the creature location data
         with open('world_input.txt') as f:

@@ -1,0 +1,8 @@
+Flytrap:yellow
+ifenemy 4
+reverse
+go 1
+infect
+go 1
+
+This creature sits in one place and reversesdirection, and will infect anything which comes in front of it.

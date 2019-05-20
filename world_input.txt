@@ -1,3 +1,4 @@
-5
-100
-Roomber 3 3 West
+10
+2
+Flytrap 5 5 East
+Hopper 5 6 North
