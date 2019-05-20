@@ -1,0 +1,29 @@
+Roomber:purple
+ifnotwall 4 // Twist when we hit a wall
+twist
+go 6
+hop
+go 1
+ifnotwall 9 // Reverse when we get to a corner
+reverse
+go 11
+hop
+go 6
+ifnotwall 18 // Start looping through the rows
+twist
+reverse
+hop
+twist
+reverse
+go 20
+hop
+go 11
+ifnotwall 25 // Start looping through the rows
+twist
+hop
+twist
+go 11
+hop
+go 20
+
+This creature will systematically traverse the whole map.

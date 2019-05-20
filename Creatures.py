@@ -140,7 +140,7 @@ class Creature:
                 elif self.direction == 'South':
                     self.direction = 'West'
                 elif self.direction == 'West':
-                    self.direction = 'north'
+                    self.direction = 'North'
 
             self.next_instruction += 1
             finished = True
@@ -262,7 +262,7 @@ class CreatureWorld:
     def setup_simulation(self):
 
         ## If new creatures are defined, they should be added to this list: #6
-        all_creatures = ['Hopper', 'Parry', 'Rook']
+        all_creatures = ['Hopper', 'Parry', 'Rook', 'Roomber']
 
         # Read the creature location data
         with open('world_input.txt') as f:
