@@ -135,6 +135,24 @@ class Creature:
         elif self.direction == 'West':
             self.direction = 'North'
 
+    def ifsame(self, op):
+        if isinstance(self, type(self.ahead)) and self.name == self.ahead.name:
+            self.next_instruction = int(op[1])
+        else:
+            self.next_instruction += 1
+
+    def ifenemy(self, op):
+        if isinstance(self, type(self.ahead)) and self.name != self.ahead.name:
+            self.next_instruction = int(op[1])
+        else:
+            self.next_instruction += 1
+
+    def ifrandom(self, op, world):
+        if world.pseudo_random():
+            self.next_instruction = int(op[1])
+        else:
+            self.next_instruction += 1
+
     ## Execute a single move (either hop, left or right) for this creature by following the instructions in its dna
     def make_move(self, world):
         finished = False
@@ -150,9 +168,9 @@ class Creature:
         }
 
         # Operations that do not end a creature's turn
-        control_ops = set(['go', 'ifnotwall'])
+        control_ops = set(['go', 'ifnotwall', 'ifsame', 'ifenemy', 'ifrandom'])
 
-        # Execute the creature's instructions until a non-control-flow op is run
+        # Execute instructions until a non-control-flow op is run
         while not finished:
             next_op = self.dna[self.next_instruction]
             op = next_op.split()
@@ -160,7 +178,10 @@ class Creature:
             op_args = {
                 'go': {'op': op},
                 'hop': {'ahead_row': ahead_row, 'ahead_col': ahead_col},
-                'ifnotwall': {'op': op}
+                'ifnotwall': {'op': op},
+                'ifsame': {'op': op},
+                'ifenemy': {'op': op},
+                'ifrandom': {'op': op, 'world': world},
             }
 
             dispatch[op[0]](**op_args.get(op[0], {}))
@@ -170,6 +191,7 @@ class Creature:
 
             self.next_instruction += 1
             finished = True
+
 
 ## This class represents the grid-based world
 class World:
@@ -194,7 +216,7 @@ class World:
         # Check if there are any creatures in this world at the given position
         for creature in self.creatures:
             if creature.row == row and creature.col == col:
-                return 'CREATURE'
+                return creature
 
         return 'EMPTY'
 
@@ -261,6 +283,10 @@ class World:
             turtle.pendown()
             turtle.forward(grid_width)
             turtle.penup()
+
+    def pseudo_random(self):
+        total = sum(c.row + c.col for c in self.creatures) * self.generation
+        return int(hashlib.sha256(str(total).encode()).hexdigest(), 16) % 2
 
 
 ## This class reads the data files from disk and sets up the window
