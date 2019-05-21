@@ -1,4 +1,4 @@
 10
 200
 Roomber 5 5 East
-Hopper 5 6 North
+Randy 5 6 North

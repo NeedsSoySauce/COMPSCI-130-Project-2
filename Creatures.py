@@ -1,5 +1,10 @@
-### COMPSCI 130, Summer School 2019
-### Project Two - Creatures
+"""COMPSCI 130, Summer School 2019
+Project Two - Creatures
+ID: 606316306
+UPI: falb418
+Author: Feras Albaroudi
+"""
+
 import turtle
 import hashlib
 from collections import Counter
@@ -413,6 +418,7 @@ class CreatureWorld:
         world_generations = world_data[1]
         self.world = World(int(world_size), int(world_generations))
 
+        # Add creatures in world_data to the world
         for creature in world_data[2:]:
             data = creature.split()
             dna = dna_dict[data[0]]
