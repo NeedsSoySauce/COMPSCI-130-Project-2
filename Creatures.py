@@ -4,33 +4,37 @@ import turtle
 import hashlib
 from collections import Counter
 
-## This class represents a creature
-class Creature:
 
-    ## A creature stores its position and direction and its "DNA" - the list of instructions it follows
-    def __init__(self, row, col, dna, direction, name):
+class Creature:
+    """This class represents a creature"""
+
+    def __init__(self, row, col, dna, direction):
+        """Creates a creature at the given row/col position."""
         self.direction = direction
         self.row = row
         self.col = col
         self.dna = dna
-        self.name = name
         self.next_instruction = 1
         self.ahead = None
+        self.name = self.get_species()
 
-    ## Returns a string representation of the creature
     def __str__(self):
-        return str(self.get_species() + ' ' + str(self.row) + ' ' +
-                   str(self.col) + ' ' + str(self.direction))
+        """Returns a string representation of this creature."""
+        return f'{self.get_species()} {self.row} {self.col} {self.direction}'
 
-    ## A creature draws itself using the colour specified as part of its dna
-    ## the size of the grid squares, and the position of the top-left pixel are provided as input
     def draw(self, grid_size, top_left_x, top_left_y):
+        """Draws this creature in the colour specified in it's dna.
 
-        ## Compute the position of the top left hand corner of the cell this creature is in
+        The size of the grid squares, and the position of the top-left pixel
+        are provided as input.
+        """
+
+        # Compute the position of the top left corner of the cell this
+        # creature is in
         x = top_left_x + (self.col - 1) * grid_size
         y = top_left_y - (self.row - 1) * grid_size
 
-        ## Draw the creature
+        # Draw the creature
 
         # Overwrite everything in the cell
         turtle.goto(x, y)
@@ -80,15 +84,16 @@ class Creature:
 
         turtle.color("black")
 
-    ## Returns the name of the species for this creature
     def get_species(self):
+        """Returns the name of the species for this creature."""
         return self.dna[0].split(":")[0]
 
-    ## Gets the current position of the creature 
     def get_position(self):
+        """Returns the current position of this creature."""
         return self.row, self.col
 
     def get_ahead_pos(self):
+        """Returns the position ahead of this creature."""
         ahead_row = self.row
         ahead_col = self.col
         if self.direction == 'North':
@@ -102,14 +107,18 @@ class Creature:
         return ahead_row, ahead_col
 
     def op_go(self, op):
+        """Sets the next instruction to the argument of op."""
         self.next_instruction = int(op[1])
 
     def op_hop(self, row, col):
+        """Moves this creature to the given position if the position is empty.
+        """
         if self.ahead == 'EMPTY':
             self.row = row
             self.col = col
 
     def op_reverse(self):
+        """Reverses this creature's direction."""
         if self.direction == 'North':
             self.direction = 'South'
         elif self.direction == 'South':
@@ -120,12 +129,16 @@ class Creature:
             self.direction = 'East'
 
     def op_ifnotwall(self, op):
+        """Sets the next instruction to the argument of op if the position
+        ahead of this creature is empty.
+        """
         if self.ahead == 'EMPTY':
             self.next_instruction = int(op[1])
         else:
             self.next_instruction += 1
 
     def op_twist(self):
+        """Turns this creature 90 degrees clockwise."""
         if self.direction == 'North':
             self.direction = 'East'
         elif self.direction == 'East':
@@ -136,29 +149,54 @@ class Creature:
             self.direction = 'North'
 
     def op_ifsame(self, op):
+        """Sets the next instruction to the argument of op if the position
+        ahead of this creature contains a creature of the same species,
+        otherwise the instruction immediately after this op is run.
+        """
         if isinstance(self, type(self.ahead)) and self.name == self.ahead.name:
             self.next_instruction = int(op[1])
         else:
             self.next_instruction += 1
 
     def op_ifenemy(self, op):
+        """Sets the next instruction to the argument of op if the position
+        ahead of this creature contains a creature of a different species,
+        otherwise the instruction immediately after this op is run.
+        """
         if isinstance(self, type(self.ahead)) and self.name != self.ahead.name:
             self.next_instruction = int(op[1])
         else:
             self.next_instruction += 1
 
     def op_ifrandom(self, op, world):
+        """Sets the next instruction to the argument of op approx. 50% of
+        the time, otherwise the instruction immediately after this op is run.
+        """
         if world.pseudo_random():
             self.next_instruction = int(op[1])
         else:
             self.next_instruction += 1
 
     def op_infect(self):
-        self.ahead.name = self.name
-        self.ahead.dna = self.dna
+        """If the cell immediately in front of this creature contains another
+        creature of a different species then this instruction will infect that
+        other creature.
 
-    ## Execute a single move (either hop, left or right) for this creature by following the instructions in its dna
+        When a creature is infected, it keeps its position and direction, but
+        its DNA (i.e. its list of instructions) are replaced with those of the
+        infecting creature.
+        """
+        if isinstance(self, type(self.ahead)) and self.name != self.ahead.name:
+            self.ahead.name = self.name
+            self.ahead.dna = self.dna
+
     def make_move(self, world):
+        """Execute a single non-control-flow instruction for this creature by
+        following the instructions in its dna.
+
+        non-control-flow instructions are instructions which do not end this
+        creatures turn.
+        """
         finished = False
         ahead_row, ahead_col = self.get_ahead_pos()
         self.ahead = world.get_cell(ahead_row, ahead_col)
@@ -176,7 +214,8 @@ class Creature:
         }
 
         # Operations that do not end a creature's turn
-        control_ops = set(['go', 'ifnotwall', 'ifsame', 'ifenemy', 'ifrandom'])
+        control_flow_ops = set(['go', 'ifnotwall', 'ifsame', 'ifenemy',
+                                'ifrandom'])
 
         # Execute instructions until a non-control-flow op is run
         while not finished:
@@ -197,30 +236,36 @@ class Creature:
             except KeyError:
                 raise ValueError(f"can't find instruction '{next_op}'.")
 
-            if op[0] in control_ops:
+            if op[0] in control_flow_ops:
                 continue
 
             self.next_instruction += 1
             finished = True
 
 
-## This class represents the grid-based world
 class World:
+    """This class represents the grid-based world."""
 
-    ## The world stores its grid-size, and the number of generations to be executed.  It also stores a creature. 4
     def __init__(self, size, max_generations):
+        """Creates a new world with the given grid-size and number of generations.
+        """
         self.size = size
         self.generation = 0
         self.max_generations = max_generations
         self.creatures = []
 
-    ## Adds a creature to the world
     def add_creature(self, c):
+        """Adds a creature to the world."""
         self.creatures.append(c)
 
-    ## Gets the contents of the specified cell.  This could be 'WALL' if the cell is off the grid
-    ## or 'EMPTY' if the cell is unoccupied
     def get_cell(self, row, col):
+        """Gets the contents of the specified cell.
+
+        Returns:
+            'WALL': if the cell is off the grid
+            creature: if the cell contains a creature the creature is returned
+            'EMPTY': if the cell isn't a wall or creature
+        """
         if row <= 0 or col <= 0 or row >= self.size + 1 or col >= self.size + 1:
             return 'WALL'
 
@@ -231,9 +276,12 @@ class World:
 
         return 'EMPTY'
 
-    ## Executes one generation for the world - the creature moves once.  If there are no more
-    ## generations to simulate, the world is printed
     def simulate(self):
+        """Executes one generation for the world by allowing each creature in
+        this world to make a move in the order they were added to this world.
+
+        If there are no more generations to simulate, the world is printed.
+        """
         if self.generation < self.max_generations:
             self.generation += 1
             for creature in self.creatures:
@@ -257,10 +305,13 @@ class World:
 
         return f'{self.size}\n' + f'{counts}\n' + '\n'.join(creatures)
 
-    ## Display the world by drawing the creature, and placing a grid around it
     def draw(self):
+        """Displays the world by drawing each creature and in this world and
+        the world's grid.
+        """
 
-        # Basic coordinates of grid within 800x800 window - total width and position of top left corner
+        # Basic coordinates of grid within 800x800 window
+        # - total width and position of top left corner
         grid_width = 700
         top_left_x = -350
         top_left_y = 350
@@ -296,15 +347,18 @@ class World:
             turtle.penup()
 
     def pseudo_random(self):
+        """Returns a 0 or 1 based on the current world state."""
         total = sum(c.row + c.col for c in self.creatures) * self.generation
         return int(hashlib.sha256(str(total).encode()).hexdigest(), 16) % 2
 
 
-## This class reads the data files from disk and sets up the window
 class CreatureWorld:
+    """This class reads the data files from disk and sets up the window."""
 
-    ## Initialises the window, and registers the begin_simulation function to be called when the space-bar is pressed
     def __init__(self):
+        """Initialises the window, and registers the begin_simulation function
+        to be called when the space-bar is pressed.
+        """
         self.framework = SimulationFramework(800, 800,
                                              'COMPSCI 130 Project Two')
         self.framework.add_key_action(self.begin_simulation, ' ')
@@ -312,19 +366,20 @@ class CreatureWorld:
             self.next_turn,
             100)  # Delay between animation "ticks" - smaller is faster.
 
-    ## Starts the animation
     def begin_simulation(self):
+        """Starts the animation."""
         self.framework.start_simulation()
 
-    ## Ends the animation
     def end_simulation(self):
+        """Ends the animation."""
         self.framework.stop_simulation()
 
-    ## Reads the data files from disk
     def setup_simulation(self):
+        """Reads the data files from disk."""
 
-        ## If new creatures are defined, they should be added to this list: #6
-        all_creatures = ['Hopper', 'Parry', 'Rook', 'Roomber', 'Randy', 'Flytrap']
+        # If new creatures are defined, they should be added to this list
+        all_creatures = ['Hopper', 'Parry', 'Rook', 'Roomber', 'Randy',
+                         'Flytrap']
 
         # Read the creature location data
         with open('world_input.txt') as f:
@@ -336,40 +391,44 @@ class CreatureWorld:
             with open('Creatures//' + creature + '.txt') as f:
                 dna_dict[creature] = f.read().splitlines()
 
-        # Create a world of the specified size, and set the number of generations to be performed when the simulation runs
+        # Create a world of the specified size, and set the number of
+        # generations to be performed when the simulation runs
         world_size = world_data[0]
         world_generations = world_data[1]
         self.world = World(int(world_size), int(world_generations))
 
         for creature in world_data[2:]:
             data = creature.split()
-            name = data[0]
-            dna = dna_dict[name]
+            dna = dna_dict[data[0]]
             row = int(data[1])
             col = int(data[2])
             direction = data[3]
 
             if self.world.get_cell(row, col) == 'EMPTY':
-                self.world.add_creature(Creature(row, col, dna, direction, name))
+                self.world.add_creature(Creature(row, col, dna, direction))
 
         # Draw the initial layout of the world
         self.world.draw()
 
-    ## This function is called each time the animation loop "ticks".  The screen should be redrawn each time.
     def next_turn(self):
+        """This function is called each time the animation loop "ticks". The
+        screen should be redrawn each time.
+        """
         turtle.clear()
         self.world.draw()
         if self.world.simulate():
             self.end_simulation()
 
-    ## This function sets up the simulation and starts the animation loop
     def start(self):
+        """This function sets up the simulation and starts the animation loop.
+        """
         self.setup_simulation()
         turtle.mainloop()  # Must appear last.
 
 
-## This is the simulation framework - it does not need to be edited
 class SimulationFramework:
+    """This is the simulation framework - it does not need to be edited."""
+
     def __init__(self, width, height, title):
         self.width = width
         self.height = height
