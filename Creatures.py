@@ -214,8 +214,8 @@ class Creature:
         }
 
         # Operations that do not end a creature's turn
-        control_flow_ops = set(['go', 'ifnotwall', 'ifsame', 'ifenemy',
-                                'ifrandom'])
+        control_flow_ops = set(
+            ['go', 'ifnotwall', 'ifsame', 'ifenemy', 'ifrandom'])
 
         # Execute instructions until a non-control-flow op is run
         while not finished:
@@ -223,12 +223,26 @@ class Creature:
             op = next_op.split()
 
             op_args = {
-                'go': {'op': op},
-                'hop': {'row': ahead_row, 'col': ahead_col},
-                'ifnotwall': {'op': op},
-                'ifsame': {'op': op},
-                'ifenemy': {'op': op},
-                'ifrandom': {'op': op, 'world': world},
+                'go': {
+                    'op': op
+                },
+                'hop': {
+                    'row': ahead_row,
+                    'col': ahead_col
+                },
+                'ifnotwall': {
+                    'op': op
+                },
+                'ifsame': {
+                    'op': op
+                },
+                'ifenemy': {
+                    'op': op
+                },
+                'ifrandom': {
+                    'op': op,
+                    'world': world
+                },
             }
 
             try:
@@ -266,7 +280,8 @@ class World:
             creature: if the cell contains a creature the creature is returned
             'EMPTY': if the cell isn't a wall or creature
         """
-        if row <= 0 or col <= 0 or row >= self.size + 1 or col >= self.size + 1:
+        if (row <= 0 or col <= 0 or row >= self.size + 1
+                or col >= self.size + 1):
             return 'WALL'
 
         # Check if there are any creatures in this world at the given position
@@ -378,8 +393,9 @@ class CreatureWorld:
         """Reads the data files from disk."""
 
         # If new creatures are defined, they should be added to this list
-        all_creatures = ['Hopper', 'Parry', 'Rook', 'Roomber', 'Randy',
-                         'Flytrap']
+        all_creatures = [
+            'Hopper', 'Parry', 'Rook', 'Roomber', 'Randy', 'Flytrap'
+        ]
 
         # Read the creature location data
         with open('world_input.txt') as f:
@@ -434,15 +450,15 @@ class SimulationFramework:
         self.height = height
         self.title = title
         self.simulation_running = False
-        self.tick = None  #function to call for each animation cycle
-        self.delay = 100  #default is .1 second.
-        turtle.title(title)  #title for the window
-        turtle.setup(width, height)  #set window display
-        turtle.hideturtle()  #prevent turtle appearance
-        turtle.tracer(False)  #prevent turtle animation
-        turtle.listen()  #set window focus to the turtle window
-        turtle.mode('logo')  #set 0 direction as straight up
-        turtle.penup()  #don't draw anything
+        self.tick = None  # function to call for each animation cycle
+        self.delay = 100  # default is .1 second.
+        turtle.title(title)  # title for the window
+        turtle.setup(width, height)  # set window display
+        turtle.hideturtle()  # prevent turtle appearance
+        turtle.tracer(False)  # prevent turtle animation
+        turtle.listen()  # set window focus to the turtle window
+        turtle.mode('logo')  # set 0 direction as straight up
+        turtle.penup()  # don't draw anything
         self.__animation_loop()
 
     def start_simulation(self):
