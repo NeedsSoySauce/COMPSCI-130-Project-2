@@ -11,7 +11,7 @@ from collections import Counter
 
 
 class Creature:
-    """This class represents a creature"""
+    """This class represents a creature."""
 
     def __init__(self, row, col, dna, direction):
         """Creates a creature at the given row/col position."""
@@ -38,8 +38,6 @@ class Creature:
         # creature is in
         x = top_left_x + (self.col - 1) * grid_size
         y = top_left_y - (self.row - 1) * grid_size
-
-        # Draw the creature
 
         # Overwrite everything in the cell
         turtle.goto(x, y)
@@ -115,10 +113,10 @@ class Creature:
         """Sets the next instruction to the argument of op."""
         self.next_instruction = int(op[1])
 
-    def op_hop(self, row, col):
+    def op_hop(self, row, col, world):
         """Moves this creature to the given position if the position is empty.
         """
-        if self.ahead == 'EMPTY':
+        if world.get_cell(row, col) == 'EMPTY':
             self.row = row
             self.col = col
 
@@ -135,9 +133,9 @@ class Creature:
 
     def op_ifnotwall(self, op):
         """Sets the next instruction to the argument of op if the position
-        ahead of this creature is empty.
+        ahead of this creature isn't a wall.
         """
-        if self.ahead == 'EMPTY':
+        if self.ahead != 'WALL':
             self.next_instruction = int(op[1])
         else:
             self.next_instruction += 1
@@ -233,7 +231,8 @@ class Creature:
                 },
                 'hop': {
                     'row': ahead_row,
-                    'col': ahead_col
+                    'col': ahead_col,
+                    'world': world
                 },
                 'ifnotwall': {
                     'op': op
