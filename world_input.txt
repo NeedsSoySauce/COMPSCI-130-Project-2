@@ -1,4 +1,7 @@
 10
 200
-Roomber 5 5 East
-Randy 5 6 North
+Roomber 5 5 North
+Looper 5 6 West
+Roomber 2 5 East
+Roomber 8 9 South
+Looper 5 7 West

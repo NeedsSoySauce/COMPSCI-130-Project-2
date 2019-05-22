@@ -192,6 +192,7 @@ class Creature:
         if isinstance(self, type(self.ahead)) and self.name != self.ahead.name:
             self.ahead.name = self.name
             self.ahead.dna = self.dna
+            self.ahead.next_instruction = 1
 
     def make_move(self, world):
         """Execute a single non-control-flow instruction for this creature by
@@ -398,7 +399,7 @@ class CreatureWorld:
 
         # If new creatures are defined, they should be added to this list
         all_creatures = [
-            'Hopper', 'Parry', 'Rook', 'Roomber', 'Randy', 'Flytrap'
+            'Hopper', 'Parry', 'Rook', 'Roomber', 'Randy', 'Flytrap', 'Looper'
         ]
 
         # Read the creature location data

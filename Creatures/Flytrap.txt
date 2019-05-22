@@ -5,4 +5,4 @@ go 1
 infect
 go 1
 
-This creature sits in one place and reversesdirection, and will infect anything which comes in front of it.
+This creature sits in one place and reverses direction, and will infect anything which comes in front of it.
