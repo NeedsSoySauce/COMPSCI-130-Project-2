@@ -12,3 +12,4 @@ infect
 go 1
 
 This creature will run around the edge of the world infecting anything infront of it as it goes.
+Author: falb418

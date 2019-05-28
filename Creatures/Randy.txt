@@ -8,4 +8,5 @@ go 1
 reverse
 go 1
 
-This creature randomly either moves forward one position, or stays in the same place, in which case it either turns clockwise or reverses at random
+This creature randomly either moves forward one position, or stays in the same place,
+in which case it either turns clockwise or reverses at random

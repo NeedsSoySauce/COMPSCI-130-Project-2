@@ -303,9 +303,9 @@ class World:
         If there are no more generations to simulate, the world is printed.
         """
         if self.generation < self.max_generations:
-            self.generation += 1
             for creature in self.creatures:
                 creature.make_move(self)
+            self.generation += 1
             return False
         else:
             print(self)
@@ -399,7 +399,8 @@ class CreatureWorld:
 
         # If new creatures are defined, they should be added to this list
         all_creatures = [
-            'Hopper', 'Parry', 'Rook', 'Roomber', 'Randy', 'Flytrap', 'Looper'
+            'Hopper', 'Parry', 'Rook', 'Roomber', 'Randy', 'Flytrap', 'Looper',
+            'Corner'
         ]
 
         # Read the creature location data
