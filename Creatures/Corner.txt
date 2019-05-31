@@ -1,5 +1,5 @@
 Corner:blue
-ifenemy 10
+ifenemy 10 // Find a wall
 ifsame 8
 ifnotwall 6
 twist
@@ -10,7 +10,7 @@ twist
 go 1
 infect
 go 1
-ifenemy 27
+ifenemy 27 // Turn towards a corner
 ifsame 15
 ifnotwall 25
 twist
@@ -27,12 +27,18 @@ hop
 go 12
 infect
 go 12
-ifenemy 33
-twist
+ifenemy 36 // Infect any enemy that gets infront of us
+ifsame 34
+ifnotwall 34
 reverse
+go 29
+twist
 go 29
 infect
 go 29
+
+
+
 
 
 This creature will attempt to find a corner and stay there, after which it will infect anything infront of it.

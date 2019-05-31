@@ -1,0 +1,50 @@
+Sweeper:purple
+ifenemy 10 // Find a wall
+ifsame 8
+ifnotwall 6
+twist
+go 12
+hop
+go 1
+twist
+go 1
+infect
+go 1
+ifenemy 21 // Move towards a corner
+ifsame 19
+ifnotwall 17
+twist
+go 23
+hop
+go 12
+twist
+go 12
+infect
+go 12
+ifenemy 44 // Start of navigation block
+ifnotwall 27 // Move around the world
+twist
+go 23 // Keep twisting until we aren't facing a wall
+ifenemy 30
+hop // Move to the next row/col
+go 32
+infect
+go 27
+ifenemy 35  
+twist
+go 37
+infect
+go 32
+ifenemy 42
+ifnotwall 40
+go 23
+hop
+go 37
+infect
+go 37
+infect
+go 23 // End of navigation block
+
+
+
+This creature will move around the board, attempting to traverse all of the cells in the world.

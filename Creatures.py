@@ -263,7 +263,7 @@ class Creature:
 
 
 class World:
-    """This class represents the grid-based world."""
+    """This class represents a grid-based world."""
 
     def __init__(self, size, max_generations):
         """Creates a new world with the given grid-size and number of generations.
@@ -323,7 +323,7 @@ class World:
         # Convert each creature to it's string representation
         creatures = [c.__str__() for c in self.creatures]
 
-        return f'{self.size}\n' + f'{counts}\n' + '\n'.join(creatures)
+        return f'{self.size}\n{counts}\n' + '\n'.join(creatures)
 
     def draw(self):
         """Displays the world by drawing each creature and in this world and
@@ -400,7 +400,7 @@ class CreatureWorld:
         # If new creatures are defined, they should be added to this list
         all_creatures = [
             'Hopper', 'Parry', 'Rook', 'Roomber', 'Randy', 'Flytrap', 'Looper',
-            'Corner'
+            'Corner', 'Sweeper'
         ]
 
         # Read the creature location data
