@@ -400,7 +400,7 @@ class CreatureWorld:
         # If new creatures are defined, they should be added to this list
         all_creatures = [
             'Hopper', 'Parry', 'Rook', 'Roomber', 'Randy', 'Flytrap', 'Looper',
-            'Corner', 'Sweeper'
+            'Corner', 'Sweeper', 'Derp'
         ]
 
         # Read the creature location data

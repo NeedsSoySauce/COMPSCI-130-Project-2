@@ -1,0 +1,11 @@
+Derp:magenta
+ifenemy 7
+ifrandom 5
+hop
+go 1
+twist
+go 1
+infect
+go 1
+
+This creature randomly decides between a hop or a twist on each turn.

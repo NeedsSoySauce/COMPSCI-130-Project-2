@@ -21,7 +21,7 @@ twist
 go 12
 infect
 go 12
-ifenemy 44 // Start of navigation block
+ifenemy 44 // Turn clockwise
 ifnotwall 27 // Move around the world
 twist
 go 23 // Keep twisting until we aren't facing a wall
@@ -37,14 +37,45 @@ infect
 go 32
 ifenemy 42
 ifnotwall 40
-go 23
+go 46
 hop
 go 37
 infect
 go 37
 infect
-go 23 // End of navigation block
-
-
+go 23 // End of turn clockwise
+ifenemy 67 // Start of turn anti-clockwise
+ifnotwall 50 // Move around the world
+reverse
+go 46 // Keep twisting until we aren't facing a wall
+ifenemy 53 // Turn towards next row/col
+twist 
+go 55
+infect
+go 50
+ifenemy 58 // Move into next row/col
+hop 
+go 60
+infect
+go 55
+ifenemy 63 // Turn opposite length of next row/col
+twist
+go 65
+infect
+go 60
+ifenemy 68 // Turn towards length of next row/col
+reverse
+go 70
+infect
+go 65
+ifenemy 77 // Move through this row/col
+ifnotwall 73
+go 23
+hop
+go 70
+infect
+go 70
+infect
+go 46 // End of turn anti-clockwise
 
 This creature will move around the board, attempting to traverse all of the cells in the world.
