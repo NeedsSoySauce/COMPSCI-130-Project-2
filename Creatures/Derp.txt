@@ -9,3 +9,4 @@ infect
 go 1
 
 This creature randomly decides between a hop or a twist on each turn.
+Author: falb418

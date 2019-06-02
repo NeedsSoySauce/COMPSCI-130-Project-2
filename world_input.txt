@@ -1,10 +1,6 @@
 15
 2000
-Sweeper 8 8 North
-Looper 2 6 North
-Corner 1 3 South
-Derp 13 7 South
-Sweeper 1 8 East
-Looper 11 6 West
-Corner 13 13 East
-Derp 1 1 East
+Cat 8 8 North
+Sweeper 8 5 North
+Cat 2 2 South
+Sweeper 2 8 South

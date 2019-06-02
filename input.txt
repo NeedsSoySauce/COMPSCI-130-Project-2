@@ -1,0 +1,9 @@
+ifenemy 65 // Move through this row/col
+ifnotwall 63
+go 46
+hop
+go 60
+infect
+go 60
+infect
+go 46 // End of turn anti-clockwise

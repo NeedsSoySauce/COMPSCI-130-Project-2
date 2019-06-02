@@ -10,7 +10,7 @@ twist
 go 1
 infect
 go 1
-ifenemy 21 // Move towards a corner
+ifenemy 21 // Find a corner
 ifsame 19
 ifnotwall 17
 twist
@@ -79,3 +79,4 @@ infect
 go 46 // End of turn anti-clockwise
 
 This creature will move around the board, attempting to traverse all of the cells in the world.
+Author: falb418
