@@ -1,6 +1,6 @@
 15
 2000
-Cat 8 8 North
+Cat 1 1 North
 Sweeper 8 5 North
 Cat 2 2 South
 Sweeper 2 8 South

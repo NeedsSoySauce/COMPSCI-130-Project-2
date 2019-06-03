@@ -14,7 +14,22 @@ class Creature:
     """This class represents a creature."""
 
     def __init__(self, row, col, dna, direction):
-        """Creates a creature at the given row/col position."""
+        """Creates a creature at the given row/col position.
+
+        Arguments:
+            row (int): initial vertical position (starting from 1)
+            col (int): initial horizontal position (starting from 1)
+            dna (list): list of instructions for this creature to execute
+            direction (string): initial direction that this creature will face,
+                can be one of 'North', 'South', 'East' or 'West'
+
+        Raises:
+            ValueError: '{direction}' is not a valid direction
+        """
+
+        if direction not in ['North', 'East', 'South', "West"]:
+            raise ValueError(f"'{direction}'' is not a valid direction")
+
         self.direction = direction
         self.row = row
         self.col = col
@@ -32,6 +47,14 @@ class Creature:
 
         The size of the grid squares, and the position of the top-left pixel
         are provided as input.
+
+        Arguments:
+            grid_size (float): side length (in subpixels) of the cells of the
+                world this creature is being drawn in
+            top_left_x (int): x position (in pixels) of the top-left corner of
+                the world this creature is being drawn in
+            top_left_y (int): y position (in pixels) of the top-left corner of
+                the world this creature is being drawn in
         """
 
         # Compute the position of the top left corner of the cell this
@@ -200,6 +223,9 @@ class Creature:
 
         non-control-flow instructions are instructions which do not end this
         creatures turn.
+
+        Arguments:
+            world (World): World instance that this creature is part of
         """
         finished = False
         ahead_row, ahead_col = self.get_ahead_pos()
@@ -267,6 +293,10 @@ class World:
 
     def __init__(self, size, max_generations):
         """Creates a new world with the given grid-size and number of generations.
+
+        Arguments:
+            size (int): side length (in pixels) of this world
+            max_generations (int): number of generations to run this world for
         """
         self.size = size
         self.generation = 0
@@ -279,6 +309,10 @@ class World:
 
     def get_cell(self, row, col):
         """Gets the contents of the specified cell.
+
+        Arguments:
+            row (int): vertical cell position
+            col (int): horizontal cell position
 
         Returns:
             'WALL': if the cell is off the grid
