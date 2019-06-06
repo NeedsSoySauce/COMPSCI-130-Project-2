@@ -1,3 +1,4 @@
+Sweeper:purple
 ifenemy 10 // Find a wall
 ifsame 8
 ifnotwall 6
@@ -76,3 +77,6 @@ infect
 go 70
 infect
 go 46 // End of turn anti-clockwise
+
+This creature will move around the board, attempting to traverse all of the cells in the world.
+Author: falb418

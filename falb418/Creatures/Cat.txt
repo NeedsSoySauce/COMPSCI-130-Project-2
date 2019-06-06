@@ -1,0 +1,32 @@
+Cat:blue
+ifenemy 9 
+twist
+ifenemy 9
+twist
+ifenemy 9
+twist
+ifenemy 9
+go 11
+infect 
+go 1
+ifrandom 14 
+ifrandom 26
+go 23
+ifrandom 20 
+go 16
+reverse 
+twist
+ifnotwall 28
+go 11
+reverse 
+ifnotwall 28
+go 11
+twist 
+ifnotwall 28
+go 11
+ifnotwall 28 
+go 11
+hop 
+go 1
+
+Author: Zac Pullar-Strecker

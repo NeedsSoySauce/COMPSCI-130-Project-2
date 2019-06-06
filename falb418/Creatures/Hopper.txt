@@ -1,0 +1,5 @@
+Hopper:red
+hop
+go 1
+
+This creature just hops forward.

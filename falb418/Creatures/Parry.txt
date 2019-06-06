@@ -1,0 +1,5 @@
+Parry:grey
+reverse
+go 1
+
+This creature keeps moving forward until it hits a wall and then it reverse direction.

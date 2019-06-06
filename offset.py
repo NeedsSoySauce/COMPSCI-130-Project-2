@@ -3,7 +3,7 @@ Anything after two slashes is treated as a comment.
 """
 
 filename = 'input.txt'
-offset = 12
+offset = 50
 
 with open(filename, 'r') as f:
     data = f.read().split('\n')

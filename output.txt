@@ -1,0 +1,78 @@
+ifenemy 60 // Find a wall
+ifsame 58
+ifnotwall 56
+twist
+go 62
+hop
+go 51
+twist
+go 51
+infect
+go 51
+ifenemy 71 // Find a corner
+ifsame 69
+ifnotwall 67
+twist
+go 73
+hop
+go 62
+twist
+go 62
+infect
+go 62
+ifenemy 94 // Turn clockwise
+ifnotwall 77 // Move around the world
+twist
+go 73 // Keep twisting until we aren't facing a wall
+ifenemy 80
+hop // Move to the next row/col
+go 82
+infect
+go 77
+ifenemy 85
+twist
+go 87
+infect
+go 82
+ifenemy 92
+ifnotwall 90
+go 96
+hop
+go 87
+infect
+go 87
+infect
+go 73 // End of turn clockwise
+ifenemy 117 // Start of turn anti-clockwise
+ifnotwall 100 // Move around the world
+reverse
+go 96 // Keep twisting until we aren't facing a wall
+ifenemy 103 // Turn towards next row/col
+twist
+go 105
+infect
+go 100
+ifenemy 108 // Move into next row/col
+hop
+go 110
+infect
+go 105
+ifenemy 113 // Turn opposite length of next row/col
+twist
+go 115
+infect
+go 110
+ifenemy 118 // Turn towards length of next row/col
+reverse
+go 120
+infect
+go 115
+ifenemy 127 // Move through this row/col
+ifnotwall 123
+go 73
+hop
+go 120
+infect
+go 120
+infect
+go 96 // End of turn anti-clockwise
