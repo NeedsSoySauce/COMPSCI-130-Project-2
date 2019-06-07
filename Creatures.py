@@ -75,18 +75,6 @@ class Creature:
         x = top_left_x + (self.col - 1) * grid_size
         y = top_left_y - (self.row - 1) * grid_size
 
-        # Overwrite everything in the cell
-        turtle.goto(x, y)
-        turtle.pendown()
-        turtle.begin_fill()
-        turtle.color("white")
-        turtle.goto(x + grid_size, y)
-        turtle.goto(x + grid_size, y - grid_size)
-        turtle.goto(x, y - grid_size)
-        turtle.goto(x, y)
-        turtle.end_fill()
-        turtle.penup()
-
         turtle.color(self.dna[0].split(":")[1])
 
         # Draw a triangle in the direction this creature is facing
